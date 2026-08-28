@@ -1,7 +1,18 @@
 from flask import Flask, render_template, jsonify, request
+from prometheus_flask_exporter import PrometheusMetrics
 
 # Create Flask application
 app = Flask(__name__)
+
+# Enable Prometheus metrics
+metrics = PrometheusMetrics(app)
+
+# Application information metric
+metrics.info(
+    "novawebapp",
+    "NovaWebApp Flask application",
+    version="1.0.0"
+)
 
 
 # Home page
@@ -27,7 +38,7 @@ def contact():
             "message": "Please enter your name."
         }), 400
 
-    # Send response back to JavaScript
+    # Send response
     return jsonify({
         "success": True,
         "message": f"Hello {name}! Your message reached Python Flask."
@@ -39,5 +50,5 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=5000,
-        debug=True
+        debug=False
     )
